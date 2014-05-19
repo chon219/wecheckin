@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Chon<chon219@gmail.com>
 
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 import json
+import hashlib
 
 from app import db
 from app.models import Account, Log
@@ -29,3 +30,17 @@ def checkin():
     db.session.add(log)
     db.session.commit()
     return json.dumps(dict(uid=uid, lat=lat, lon=lon))
+
+@mod.route("/verify", methods=['GET'])
+def verify():
+    sig = request.args.get("signature")
+    timestamp = request.args.get("timestamp")
+    nonce = request.args.get("nonce")
+    echostr = request.args.get("echostr")
+    token = app.config.get("TOKEN")
+    token, timestamp, nonce = sorted([token, timestamp, nonce])
+    sigtmp = hashlib.sha1(token+timestamp+nonce).hexdigest()
+    if sigtmp == sig:
+        return echostr
+    else:
+        abort(404)
