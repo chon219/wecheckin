@@ -41,7 +41,7 @@ def verify():
     token = TOKEN
     sigstr = "".join(sorted([token, timestamp, nonce]))
     sighash = hashlib.sha1(sigstr).hexdigest()
-    if sigtmp == sig:
+    if sighash == sig:
         return echostr
     else:
         abort(404)
