@@ -7,7 +7,7 @@ import hashlib
 
 from app import db
 from app.models import Account, Log
-from app.config import TOKEN
+from config import TOKEN
 
 mod = Blueprint('main', __name__)
 
