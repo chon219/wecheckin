@@ -7,6 +7,7 @@ import hashlib
 
 from app import db
 from app.models import Account, Log
+from app.config import TOKEN
 
 mod = Blueprint('main', __name__)
 
@@ -37,9 +38,9 @@ def verify():
     timestamp = request.args.get("timestamp")
     nonce = request.args.get("nonce")
     echostr = request.args.get("echostr")
-    token = app.config.get("TOKEN")
-    token, timestamp, nonce = sorted([token, timestamp, nonce])
-    sigtmp = hashlib.sha1(token+timestamp+nonce).hexdigest()
+    token = TOKEN
+    sigstr = "".join(sorted([token, timestamp, nonce]))
+    sighash = hashlib.sha1(sigstr).hexdigest()
     if sigtmp == sig:
         return echostr
     else:
