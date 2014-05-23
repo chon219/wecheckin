@@ -26,13 +26,15 @@ class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lat = db.Column(db.Integer)
     lon = db.Column(db.Integer)
+    description = db.Column(db.String(80))
     date = db.Column(db.DateTime)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     account = db.relationship('Account', 
             backref=db.backref('logs', lazy='dynamic'))
 
-    def __init__(self, account, lat, lon):
+    def __init__(self, account, lat, lon, description):
         self.account = account
         self.lat = lat
         self.lon = lon
+        self.description = description
         self.date = datetime.now()
