@@ -28,7 +28,7 @@ def register():
     phone = request.form.get("phone")
     if not phone:
         return failure("invalid phone")
-    account = Account.query.get(uid=uid)
+    account = Account.query.filter_by(uid=uid).first()
     if not account:
         account = Account(uid, name, phone)
         db.session.add(account)
