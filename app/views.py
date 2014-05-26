@@ -37,15 +37,24 @@ def register():
 
 @mod.route("/checkin", methods=['POST'])
 def checkin():
-    uid = int(request.form.get("uid"))
-    lat = int(request.form.get("lat"))
-    lon = int(request.form.get("lon"))
+    uid = request.form.get("uid")
+    if not uid:
+        return failure("invalid uid")
+    try:
+        lat = int(request.form.get("lat"))
+        lon = int(request.form.get("lon"))
+    except ValueError:
+        return failure("invalid lat or lon")
     description = request.form.get("description")
-    account = Account.query.filter_by(uid=uid).first_or_404()
+    if not description:
+        return failure("invalid description")
+    account = Account.query.filter_by(uid=uid).first()
+    if not account:
+        return failure("account does not exist")
     log = Log(account, lat, lon, description)
     db.session.add(log)
     db.session.commit()
-    return json.dumps(dict(uid=uid, lat=lat, lon=lon))
+    return success(dict(uid=uid, lat=lat, lon=lon))
 
 @mod.route("/verify", methods=['GET'])
 def verify():
