@@ -24,8 +24,8 @@ class Account(db.Model):
 class Log(db.Model):
     __tablename__ = 'log'
     id = db.Column(db.Integer, primary_key=True)
-    lat = db.Column(db.Integer)
-    lon = db.Column(db.Integer)
+    lat = db.Column(db.Float)
+    lon = db.Column(db.Float)
     description = db.Column(db.String(80))
     date = db.Column(db.DateTime)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))

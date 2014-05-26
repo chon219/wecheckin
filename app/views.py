@@ -40,14 +40,11 @@ def checkin():
     uid = request.form.get("uid")
     if not uid:
         return failure("invalid uid")
-    try:
-        lat = int(request.form.get("lat"))
-        lon = int(request.form.get("lon"))
-    except ValueError:
+    lat = request.form.get("lat")
+    lon = request.form.get("lon")
+    if not lat or not lon:
         return failure("invalid lat or lon")
     description = request.form.get("description")
-    if not description:
-        return failure("invalid description")
     account = Account.query.filter_by(uid=uid).first()
     if not account:
         return failure("account does not exist")
