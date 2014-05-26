@@ -11,15 +11,29 @@ from config import TOKEN
 
 mod = Blueprint('main', __name__)
 
+def success(result):
+    return json.dumps(dict(success=True, result=result))
+
+def failure(msg):
+    return json.dumps(dict(success=False, msg=msg))
+
 @mod.route("/register", methods=['POST'])
 def register():
     uid = request.form.get("uid")
+    if not uid:
+        return failure("invalid uid")
     name = request.form.get("name")
+    if not name:
+        return failure("invalid name")
     phone = request.form.get("phone")
-    account = Account(uid, name, phone)
-    db.session.add(account)
-    db.session.commit()
-    return json.dumps(dict(name=name, phone=phone, uid=uid))
+    if not phone:
+        return failure("invalid phone")
+    account = Account.query.get(uid=uid)
+    if not account:
+        account = Account(uid, name, phone)
+        db.session.add(account)
+        db.session.commit()
+    return success(dict(name=account.name, phone=account.phone, uid=account.uid))
 
 @mod.route("/checkin", methods=['POST'])
 def checkin():
